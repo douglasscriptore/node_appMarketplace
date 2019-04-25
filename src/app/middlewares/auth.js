@@ -20,6 +20,7 @@ module.exports = async (req, res, next) => {
 
     // toda rota que usar o middleware de auth vai saber qual é o ID do usuario
     req.userId = decoded.id
+
     return next()
   } catch (err) {
     return res.status(401).json({ error: 'Token invalid' })
