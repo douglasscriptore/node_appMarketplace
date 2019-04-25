@@ -8,15 +8,32 @@ class AdController {
     // a função populate na função paginate pode ser usada dentro do objeto de options
     // caso eu não estrivesse utilizando a função paginate do mongoose com o plugin moongose populate
     // spoderia usar da seginte forma Ad.populate('author).findAll()
-    const ads = await Ad.paginate(
-      {},
-      {
-        page: req.query.page || 1,
-        limit: 20,
-        populate: ['author'],
-        sort: '-createdAt'
+    // criando filtros para a consultar
+    const filters = {}
+    // filtro de preços
+    if (req.query.price_min || req.query.price_max) {
+      filters.price = {}
+
+      // a função do gte é >= apenas do mongoose
+      if (req.query.price_min) {
+        filters.price.$gte = req.query.price_min
       }
-    )
+      if (req.query.price_max) {
+        filters.price.$lte = req.query.price_max
+      }
+    }
+
+    // filtro de texto
+    if (req.query.title) {
+      filters.title = new RegExp(req.query.title, 'i') // o atributo 'i' ignora o case sensitive
+    }
+
+    const ads = await Ad.paginate(filters, {
+      page: req.query.page || 1,
+      limit: 20,
+      populate: ['author'],
+      sort: '-createdAt'
+    })
 
     return res.json(ads)
   }
