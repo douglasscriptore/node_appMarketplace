@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const authConfig = require('../../config/auth')
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -31,5 +33,22 @@ UserSchema.pre('save', async function (next) {
   }
   this.password = await bcrypt.hash(this.password, 8)
 })
+
+// declarar metodos da instancia do usuario
+UserSchema.methods = {
+  compareHash (password) {
+    return bcrypt.compare(password, this.password)
+  }
+}
+
+// metodo estatico é desperado diretamente do model User, não da instancia
+UserSchema.statics = {
+  generateToken ({ id }) {
+    // dentro do objeto { id } posso passar outras informações relevantes
+    return jwt.sign({ id }, authConfig.secret, {
+      expiresIn: authConfig.ttl // 1 dia em milesegundos
+    })
+  }
+}
 
 module.exports = mongoose.model('User', UserSchema)
