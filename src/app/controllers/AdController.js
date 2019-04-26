@@ -9,7 +9,7 @@ class AdController {
     // caso eu não estrivesse utilizando a função paginate do mongoose com o plugin moongose populate
     // spoderia usar da seginte forma Ad.populate('author).findAll()
     // criando filtros para a consultar
-    const filters = {}
+    const filters = { purchasedBy: null }
     // filtro de preços
     if (req.query.price_min || req.query.price_max) {
       filters.price = {}

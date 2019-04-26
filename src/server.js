@@ -47,10 +47,10 @@ class App {
 
   exception () {
     // quero utilizar o errorHandler() apenas em produção
-    // if (process.node.NODE_ENV === 'production') {
-    // The error handler must be before any other error middleware
-    this.express.use(Sentry.Handlers.errorHandler())
-    // }
+    if (process.env.NODE_ENV === 'production') {
+      // The error handler must be before any other error middleware
+      this.express.use(Sentry.Handlers.errorHandler())
+    }
 
     // quando o middleware recebe 4 parametros o primeiro parametro passa a ser o erro
     this.express.use(async (err, req, res, next) => {
