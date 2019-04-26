@@ -1,3 +1,6 @@
+// chama a lib que carrega as configurações do arquivo .env
+require('dotenv').config()
+
 const express = require('express')
 const mongoose = require('mongoose')
 const Youch = require('youch')
