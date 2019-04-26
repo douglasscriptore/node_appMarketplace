@@ -1,6 +1,6 @@
 const express = require('express')
 const validate = require('express-validation')
-
+const handle = require('express-async-handler')
 const routes = express.Router()
 
 // middlewares
@@ -13,12 +13,12 @@ const validators = require('./app/validators')
 routes.post(
   '/users',
   validate(validators.User),
-  controller.UserController.store
+  handle(controller.UserController.store)
 )
 routes.post(
   '/sessions',
   validate(validators.Session),
-  controller.SessionController.store
+  handle(controller.SessionController.store)
 )
 
 // toda rota a partir daqui esteja configurada para não aceitar usuario não autenticado
@@ -28,11 +28,19 @@ routes.use(authMiddleware)
  * Ads
  */
 
-routes.get('/ads', controller.AdController.index)
-routes.get('/ads/:id', controller.AdController.show)
-routes.post('/ads', validate(validators.Ad), controller.AdController.store)
-routes.put('/ads/:id', validate(validators.Ad), controller.AdController.update)
-routes.delete('/ads/:id', controller.AdController.destroy)
+routes.get('/ads', handle(controller.AdController.index))
+routes.get('/ads/:id', handle(controller.AdController.show))
+routes.post(
+  '/ads',
+  validate(validators.Ad),
+  handle(controller.AdController.store)
+)
+routes.put(
+  '/ads/:id',
+  validate(validators.Ad),
+  handle(controller.AdController.update)
+)
+routes.delete('/ads/:id', handle(controller.AdController.destroy))
 
 /**
  * Purchase
@@ -41,7 +49,7 @@ routes.delete('/ads/:id', controller.AdController.destroy)
 routes.post(
   '/purchases',
   validate(validators.Purchase),
-  controller.PurchaseController.store
+  handle(controller.PurchaseController.store)
 )
 
 module.exports = routes
